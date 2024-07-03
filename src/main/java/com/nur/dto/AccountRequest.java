@@ -1,7 +1,5 @@
-package com.nur.entity;
+package com.nur.dto;
 
-import com.nur.dto.AccountHolderAddress;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -9,20 +7,14 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
-
-
 @Data
-@Entity
-public class Account {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class AccountRequest {
 
     @NotBlank
     @Size(max = 10)
     private String accountNumber;
 
+    @NotBlank
     private String accountHolderName;
 
     @Email
@@ -32,9 +24,9 @@ public class Account {
 
     private String pan;
 
+    @NotBlank
     private BigDecimal balance;
 
-    @Embedded
     private AccountHolderAddress address;
 
 }

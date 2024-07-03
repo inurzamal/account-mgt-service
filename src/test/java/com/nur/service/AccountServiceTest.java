@@ -1,6 +1,8 @@
 package com.nur.service;
 
 import com.nur.dto.AccountHolderAddress;
+import com.nur.dto.AccountRequest;
+import com.nur.dto.AccountResponse;
 import com.nur.entity.Account;
 import com.nur.repository.AccountRepository;
 import org.junit.jupiter.api.Test;
@@ -31,17 +33,21 @@ class AccountServiceTest {
         AccountHolderAddress address = new AccountHolderAddress();
         address.setCity("Dubai");
         account.setAccountHolderName("zxc");
-        account.setId(1L);
         account.setAccountNumber("1234567890");
         account.setBalance(BigDecimal.valueOf(344.00));
         account.setAddress(address);
 
-
         when(accountRepository.save(account)).thenReturn(account);
 
-        Account actual = accountService.createAccount(account);
+        AccountRequest accountRequest = new AccountRequest();
+        accountRequest.setAccountHolderName("zxc");
+        accountRequest.setAccountNumber("1234567890");
+        accountRequest.setBalance(BigDecimal.valueOf(344.00));
+        accountRequest.setAddress(address);
 
-        assertNotNull(actual);
+        AccountResponse accountResponse = accountService.createAccount(accountRequest);
+
+        assertNotNull(accountResponse);
         assertEquals("1234567890",account.getAccountNumber());
         verify(accountRepository, times(1)).save(account);
 
@@ -55,10 +61,10 @@ class AccountServiceTest {
 
         when(accountRepository.findByAccountNumber(accountNumber)).thenReturn(Optional.of(account));
 
-        Account fetchedAccount = accountService.getAccountByAccountNumber(accountNumber);
+        AccountResponse accountResponse = accountService.getAccountByAccountNumber(accountNumber);
 
-        assertNotNull(fetchedAccount);
-        assertEquals(accountNumber, fetchedAccount.getAccountNumber());
+        assertNotNull(accountResponse);
+        assertEquals(accountNumber, accountResponse.getAccountNumber());
         verify(accountRepository, times(1)).findByAccountNumber(accountNumber);
     }
 
