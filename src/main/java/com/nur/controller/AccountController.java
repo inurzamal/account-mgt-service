@@ -2,6 +2,7 @@ package com.nur.controller;
 
 import com.nur.dto.AccountRequest;
 import com.nur.dto.AccountResponse;
+import com.nur.dto.SearchRequest;
 import com.nur.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,12 @@ public class AccountController {
         } catch (ResponseStatusException | AccountNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/account/search")
+    public ResponseEntity<List<AccountResponse>> searchAccounts(@RequestBody SearchRequest searchRequest){
+        List<AccountResponse> accountResponses = accountService.searchAccounts(searchRequest);
+        return new ResponseEntity<>(accountResponses, HttpStatus.OK);
     }
 
 }

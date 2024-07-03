@@ -2,8 +2,10 @@ package com.nur.service;
 
 import com.nur.dto.AccountRequest;
 import com.nur.dto.AccountResponse;
+import com.nur.dto.SearchRequest;
 import com.nur.entity.Account;
 import com.nur.repository.AccountRepository;
+import com.nur.specification.AccountSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +50,16 @@ public class AccountService {
 
     public List<AccountResponse> getAllAccounts(){
         return accountRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
+    }
+
+    public List<AccountResponse> searchAccounts(SearchRequest searchRequest) {
+        return accountRepository.findAll(
+                AccountSpecification.hasAccountNumber(searchRequest.getAccountNumber())
+                        .and(AccountSpecification.hasAccountHolderName(searchRequest.getAccountHolderName()))
+                        .and(AccountSpecification.hasEmail(searchRequest.getEmail()))
+                        .and(AccountSpecification.hasPhoneNo(searchRequest.getPhoneNo()))
+                        .and(AccountSpecification.hasPan(searchRequest.getPan()))
+        ).stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
     private Account mapToEntity(AccountRequest accountRequest) {
