@@ -10,28 +10,21 @@ spring:
     url: jdbc:mysql://localhost:3306/bankdb
     username: root
     password: root
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000 # 10 minutes
+      connection-timeout: 30000 # 30 seconds
+      max-lifetime: 1800000 # 30 minutes
   jpa:
     hibernate:
       ddl-auto: update
       properties:
         hibernate.dialect: org.hibernate.dialect.MySQLDialect
-#  datasource:
-#    url: jdbc:h2:mem:testdb
-#    driverClassName: org.h2.Driver
-#    username: sa
-#    password: sa
-#  jpa:
-#    database-platform: org.hibernate.dialect.H2Dialect
-
 server:
   port: 8080
-
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-
-
-
-
