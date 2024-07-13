@@ -9,23 +9,9 @@ public class AccountSpecification {
                 accountNumber == null ? null : criteriaBuilder.equal(root.get("accountNumber"), accountNumber);
     }
 
-    public static Specification<Account> hasAccountHolderName(String accountHolderName) {
+    public static Specification<Account> hasCustomerId(Long customerId) {
         return (root, query, criteriaBuilder) ->
-                accountHolderName == null ? null : criteriaBuilder.like(root.get("accountHolderName"), "%" + accountHolderName + "%");
+                customerId == null ? null : criteriaBuilder.equal(root.get("customerId"), customerId);
     }
 
-    public static Specification<Account> hasEmail(String email) {
-        return (root, query, criteriaBuilder) ->
-                email == null ? null : criteriaBuilder.equal(root.get("email"), email);
-    }
-
-    public static Specification<Account> hasPhoneNo(String phoneNo) {
-        return (root, query, criteriaBuilder) ->
-                phoneNo == null ? null : criteriaBuilder.equal(root.get("phoneNo"), phoneNo);
-    }
-
-    public static Specification<Account> hasPan(String pan) {
-        return (root, query, criteriaBuilder) ->
-                pan == null ? null : criteriaBuilder.equal(root.get("pan"), pan);
-    }
 }

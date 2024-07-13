@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -29,14 +28,9 @@ public class AccountService {
         Account existingAccount = accountRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
-        // Update the fields of the existing account
         existingAccount.setAccountNumber(accountRequest.getAccountNumber());
-        existingAccount.setAccountHolderName(accountRequest.getAccountHolderName());
         existingAccount.setBalance(accountRequest.getBalance());
-        existingAccount.setEmail(accountRequest.getEmail());
-        existingAccount.setPhoneNo(accountRequest.getPhoneNo());
-        existingAccount.setPan(accountRequest.getPan());
-        existingAccount.setAddress(accountRequest.getAddress());
+        existingAccount.setCustomerId(accountRequest.getCustomerId());
 
         Account updatedAccount = accountRepository.save(existingAccount);
         return mapToResponse(updatedAccount);
@@ -48,29 +42,25 @@ public class AccountService {
         return mapToResponse(account);
     }
 
-    public List<AccountResponse> getAllAccounts(){
-        return accountRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
+    public List<AccountResponse> getAllAccounts() {
+        return accountRepository.findAll().stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     public List<AccountResponse> searchAccounts(SearchRequest searchRequest) {
+        // Update search logic to include customerId if needed
         return accountRepository.findAll(
                 AccountSpecification.hasAccountNumber(searchRequest.getAccountNumber())
-                        .and(AccountSpecification.hasAccountHolderName(searchRequest.getAccountHolderName()))
-                        .and(AccountSpecification.hasEmail(searchRequest.getEmail()))
-                        .and(AccountSpecification.hasPhoneNo(searchRequest.getPhoneNo()))
-                        .and(AccountSpecification.hasPan(searchRequest.getPan()))
-        ).stream().map(this::mapToResponse).collect(Collectors.toList());
+                        .and(AccountSpecification.hasCustomerId(searchRequest.getCustomerId()))
+        ).stream().map(this::mapToResponse).toList();
     }
 
     private Account mapToEntity(AccountRequest accountRequest) {
         Account account = new Account();
         account.setAccountNumber(accountRequest.getAccountNumber());
-        account.setAccountHolderName(accountRequest.getAccountHolderName());
         account.setBalance(accountRequest.getBalance());
-        account.setEmail(accountRequest.getEmail());
-        account.setPhoneNo(accountRequest.getPhoneNo());
-        account.setPan(accountRequest.getPan());
-        account.setAddress(accountRequest.getAddress());
+        account.setCustomerId(accountRequest.getCustomerId());
         return account;
     }
 
@@ -78,13 +68,8 @@ public class AccountService {
         AccountResponse accountResponse = new AccountResponse();
         accountResponse.setId(account.getId());
         accountResponse.setAccountNumber(account.getAccountNumber());
-        accountResponse.setAccountHolderName(account.getAccountHolderName());
         accountResponse.setBalance(account.getBalance());
-        accountResponse.setEmail(account.getEmail());
-        accountResponse.setPhoneNo(account.getPhoneNo());
-        accountResponse.setPan(account.getPan());
-        accountResponse.setAddress(account.getAddress());
+        accountResponse.setCustomerId(account.getCustomerId());
         return accountResponse;
     }
-
 }

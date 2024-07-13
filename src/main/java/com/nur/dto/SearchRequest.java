@@ -2,16 +2,14 @@ package com.nur.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class SearchRequest {
 
     private String accountNumber;
 
-    private String accountHolderName;
+    private BigDecimal balance;
 
-    private String email;
-
-    private String phoneNo;
-
-    private String pan;
+    private Long customerId; // Reference to Customer ID
 }
