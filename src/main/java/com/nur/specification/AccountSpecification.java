@@ -11,10 +11,6 @@ public class AccountSpecification {
                 accountNumber == null ? null : criteriaBuilder.equal(root.get("accountNumber"), accountNumber);
     }
 
-    public static Specification<Account> hasBalance(BigDecimal balance) {
-        return (root, query, criteriaBuilder) ->
-                balance == null ? null : criteriaBuilder.equal(root.get("balance"), balance);
-    }
 
 //    public static Specification<Account> hasCustomerId(Long customerId) {
 //        return (root, query, criteriaBuilder) ->
@@ -25,6 +21,11 @@ public class AccountSpecification {
     public static Specification<Account> hasCustomerId(Long customerId) {
         return (root, query, criteriaBuilder) ->
                 customerId == null ? null : criteriaBuilder.equal(root.get("customer").get("id"), customerId);
+    }
+
+    public static Specification<Account> hasPhoneNo(String phoneNo) {
+        return (root, query, criteriaBuilder) ->
+                phoneNo == null ? null : criteriaBuilder.equal(root.get("customer").get("phoneNo"), phoneNo);
     }
 
 }

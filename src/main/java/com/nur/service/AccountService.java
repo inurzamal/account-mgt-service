@@ -64,7 +64,7 @@ public class AccountService {
         return accountRepository.findAll(
                 AccountSpecification.hasAccountNumber(searchRequest.getAccountNumber())
                         .and(AccountSpecification.hasCustomerId(searchRequest.getCustomerId()))
-                        .and(AccountSpecification.hasBalance(searchRequest.getBalance()))
+                        .and(AccountSpecification.hasPhoneNo(searchRequest.getPhoneNo()))
         ).stream().map(this::mapToResponse).toList();
     }
 
