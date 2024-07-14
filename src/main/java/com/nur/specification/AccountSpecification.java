@@ -16,9 +16,15 @@ public class AccountSpecification {
                 balance == null ? null : criteriaBuilder.equal(root.get("balance"), balance);
     }
 
+//    public static Specification<Account> hasCustomerId(Long customerId) {
+//        return (root, query, criteriaBuilder) ->
+//                customerId == null ? null : criteriaBuilder.equal(root.get("customerId"), customerId);
+//    }
+
+
     public static Specification<Account> hasCustomerId(Long customerId) {
         return (root, query, criteriaBuilder) ->
-                customerId == null ? null : criteriaBuilder.equal(root.get("customerId"), customerId);
+                customerId == null ? null : criteriaBuilder.equal(root.get("customer").get("id"), customerId);
     }
 
 }

@@ -11,5 +11,5 @@ public class SearchRequest {
 
     private BigDecimal balance;
 
-    private Long customerId; // Reference to Customer ID
+    private Long customerId;
 }
