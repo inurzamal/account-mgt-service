@@ -2,7 +2,8 @@ package com.nur.service;
 
 import com.nur.dto.AccountRequest;
 import com.nur.dto.AccountResponse;
-import com.nur.dto.SearchRequest;
+import com.nur.dto.AccountSearchRequest;
+import com.nur.dto.AccountSearchResponse;
 import com.nur.entity.Account;
 import com.nur.entity.Customer;
 import com.nur.repository.AccountRepository;
@@ -60,12 +61,12 @@ public class AccountService {
         return accountRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
-    public List<AccountResponse> searchAccounts(SearchRequest searchRequest) {
+    public List<AccountSearchResponse> searchAccounts(AccountSearchRequest searchRequest) {
         return accountRepository.findAll(
                 AccountSpecification.hasAccountNumber(searchRequest.getAccountNumber())
                         .and(AccountSpecification.hasCustomerId(searchRequest.getCustomerId()))
                         .and(AccountSpecification.hasPhoneNo(searchRequest.getPhoneNo()))
-        ).stream().map(this::mapToResponse).toList();
+        ).stream().map(this::mapToSearchResponse).toList();
     }
 
     private Account mapToEntity(AccountRequest accountRequest) {
@@ -84,5 +85,17 @@ public class AccountService {
         accountResponse.setBalance(account.getBalance());
         accountResponse.setCustomerId(account.getCustomer().getId());
         return accountResponse;
+    }
+
+    private AccountSearchResponse mapToSearchResponse(Account account) {
+        AccountSearchResponse accountSearchResponse = new AccountSearchResponse();
+        accountSearchResponse.setId(account.getId());
+        accountSearchResponse.setAccountNumber(account.getAccountNumber());
+        accountSearchResponse.setBalance(account.getBalance());
+        accountSearchResponse.setCustomerId(account.getCustomer().getId());
+        accountSearchResponse.setCustomerName(account.getCustomer().getFirstName()+" "+account.getCustomer().getLastName());
+        accountSearchResponse.setEmail(account.getCustomer().getEmail());
+        accountSearchResponse.setPhoneNo(account.getCustomer().getPhoneNo());
+        return accountSearchResponse;
     }
 }

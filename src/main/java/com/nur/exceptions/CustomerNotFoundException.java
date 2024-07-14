@@ -5,6 +5,13 @@ public class CustomerNotFoundException extends RuntimeException {
     private String errorCode;
     private String errorMessage;
 
+    public CustomerNotFoundException(){}
+
+    public CustomerNotFoundException(String errorCode, String errorMessage){
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+    }
+
     public String getErrorCode() {
         return errorCode;
     }

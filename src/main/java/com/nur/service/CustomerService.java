@@ -5,8 +5,11 @@ import com.nur.dto.CustomerRequest;
 import com.nur.dto.CustomerResponse;
 import com.nur.exceptions.CustomerNotFoundException;
 import com.nur.repository.CustomerRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +37,14 @@ public class CustomerService {
     public List<CustomerResponse> getAllCustomers() {
         return customerRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
     }
+
+    @Transactional
+    public String deleteCustomer(Long customerId) {
+        Customer customer = customerRepository.findById(customerId).orElseThrow(CustomerNotFoundException::new);
+        customerRepository.delete(customer);
+        return "Customer deleted with customerId: " + customerId;
+    }
+
 
     private CustomerResponse mapToResponse(Customer customer) {
         CustomerResponse response = new CustomerResponse();

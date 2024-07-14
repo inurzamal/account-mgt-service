@@ -4,6 +4,7 @@ import com.nur.dto.CustomerRequest;
 import com.nur.dto.CustomerResponse;
 import com.nur.exceptions.CustomerNotFoundException;
 import com.nur.service.CustomerService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +39,15 @@ public class CustomerController {
     public ResponseEntity<List<CustomerResponse>> getAllCustomers() {
         List<CustomerResponse> allCustomers = customerService.getAllCustomers();
         return new ResponseEntity<>(allCustomers, HttpStatus.OK);
+    }
+
+    @PostMapping("/customer/delete/{id}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable("id") Long customerId){
+        try {
+            String response = customerService.deleteCustomer(customerId);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (ResponseStatusException ex) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

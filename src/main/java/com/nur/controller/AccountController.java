@@ -2,7 +2,8 @@ package com.nur.controller;
 
 import com.nur.dto.AccountRequest;
 import com.nur.dto.AccountResponse;
-import com.nur.dto.SearchRequest;
+import com.nur.dto.AccountSearchRequest;
+import com.nur.dto.AccountSearchResponse;
 import com.nur.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,8 +52,8 @@ public class AccountController {
     }
 
     @PostMapping("/account/search")
-    public ResponseEntity<List<AccountResponse>> searchAccounts(@RequestBody SearchRequest searchRequest) {
-        List<AccountResponse> accountResponses = accountService.searchAccounts(searchRequest);
-        return new ResponseEntity<>(accountResponses, HttpStatus.OK);
+    public ResponseEntity<List<AccountSearchResponse>> searchAccounts(@RequestBody AccountSearchRequest searchRequest) {
+        List<AccountSearchResponse> accountSearchResponsList = accountService.searchAccounts(searchRequest);
+        return new ResponseEntity<>(accountSearchResponsList, HttpStatus.OK);
     }
 }
