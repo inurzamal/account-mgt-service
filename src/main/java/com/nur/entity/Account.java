@@ -21,6 +21,8 @@ public class Account {
 
     private BigDecimal balance;
 
-    private Long customerId; // Reference to Customer ID
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 }
 
