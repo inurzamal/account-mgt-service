@@ -1,13 +1,10 @@
 package com.nur.dto;
 
 import lombok.Data;
-import java.math.BigDecimal;
 
 @Data
-public class AccountResponse {
-
-    private Long id;
+public class AccountSearchRequest {
     private String accountNumber;
-    private BigDecimal balance;
+    private String phoneNo;
     private Long customerId;
 }

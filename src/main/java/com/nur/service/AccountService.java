@@ -2,9 +2,12 @@ package com.nur.service;
 
 import com.nur.dto.AccountRequest;
 import com.nur.dto.AccountResponse;
-import com.nur.dto.SearchRequest;
+import com.nur.dto.AccountSearchRequest;
+import com.nur.dto.AccountSearchResponse;
 import com.nur.entity.Account;
+import com.nur.entity.Customer;
 import com.nur.repository.AccountRepository;
+import com.nur.repository.CustomerRepository;
 import com.nur.specification.AccountSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,8 +22,16 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private CustomerRepository customerRepository;
+
     public AccountResponse createAccount(AccountRequest accountRequest) {
-        Account account = mapToEntity(accountRequest);
+        Customer customer = customerRepository.findById(accountRequest.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+        Account account = new Account();
+        account.setAccountNumber(accountRequest.getAccountNumber());
+        account.setBalance(accountRequest.getBalance());
+        account.setCustomer(customer);
         Account savedAccount = accountRepository.save(account);
         return mapToResponse(savedAccount);
     }
@@ -29,14 +40,12 @@ public class AccountService {
         Account existingAccount = accountRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
-        // Update the fields of the existing account
+        Customer customer = customerRepository.findById(accountRequest.getCustomerId())
+                .orElseThrow(() -> new AccountNotFoundException("Customer not found"));
+
         existingAccount.setAccountNumber(accountRequest.getAccountNumber());
-        existingAccount.setAccountHolderName(accountRequest.getAccountHolderName());
         existingAccount.setBalance(accountRequest.getBalance());
-        existingAccount.setEmail(accountRequest.getEmail());
-        existingAccount.setPhoneNo(accountRequest.getPhoneNo());
-        existingAccount.setPan(accountRequest.getPan());
-        existingAccount.setAddress(accountRequest.getAddress());
+        existingAccount.setCustomer(customer);
 
         Account updatedAccount = accountRepository.save(existingAccount);
         return mapToResponse(updatedAccount);
@@ -48,29 +57,24 @@ public class AccountService {
         return mapToResponse(account);
     }
 
-    public List<AccountResponse> getAllAccounts(){
+    public List<AccountResponse> getAllAccounts() {
         return accountRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
     }
 
-    public List<AccountResponse> searchAccounts(SearchRequest searchRequest) {
+    public List<AccountSearchResponse> searchAccounts(AccountSearchRequest searchRequest) {
         return accountRepository.findAll(
                 AccountSpecification.hasAccountNumber(searchRequest.getAccountNumber())
-                        .and(AccountSpecification.hasAccountHolderName(searchRequest.getAccountHolderName()))
-                        .and(AccountSpecification.hasEmail(searchRequest.getEmail()))
+                        .and(AccountSpecification.hasCustomerId(searchRequest.getCustomerId()))
                         .and(AccountSpecification.hasPhoneNo(searchRequest.getPhoneNo()))
-                        .and(AccountSpecification.hasPan(searchRequest.getPan()))
-        ).stream().map(this::mapToResponse).collect(Collectors.toList());
+        ).stream().map(this::mapToSearchResponse).toList();
     }
 
     private Account mapToEntity(AccountRequest accountRequest) {
         Account account = new Account();
         account.setAccountNumber(accountRequest.getAccountNumber());
-        account.setAccountHolderName(accountRequest.getAccountHolderName());
         account.setBalance(accountRequest.getBalance());
-        account.setEmail(accountRequest.getEmail());
-        account.setPhoneNo(accountRequest.getPhoneNo());
-        account.setPan(accountRequest.getPan());
-        account.setAddress(accountRequest.getAddress());
+        account.setCustomer(customerRepository.findById(accountRequest.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("Customer not found")));
         return account;
     }
 
@@ -78,13 +82,20 @@ public class AccountService {
         AccountResponse accountResponse = new AccountResponse();
         accountResponse.setId(account.getId());
         accountResponse.setAccountNumber(account.getAccountNumber());
-        accountResponse.setAccountHolderName(account.getAccountHolderName());
         accountResponse.setBalance(account.getBalance());
-        accountResponse.setEmail(account.getEmail());
-        accountResponse.setPhoneNo(account.getPhoneNo());
-        accountResponse.setPan(account.getPan());
-        accountResponse.setAddress(account.getAddress());
+        accountResponse.setCustomerId(account.getCustomer().getId());
         return accountResponse;
     }
 
+    private AccountSearchResponse mapToSearchResponse(Account account) {
+        AccountSearchResponse accountSearchResponse = new AccountSearchResponse();
+        accountSearchResponse.setId(account.getId());
+        accountSearchResponse.setAccountNumber(account.getAccountNumber());
+        accountSearchResponse.setBalance(account.getBalance());
+        accountSearchResponse.setCustomerId(account.getCustomer().getId());
+        accountSearchResponse.setCustomerName(account.getCustomer().getFirstName()+" "+account.getCustomer().getLastName());
+        accountSearchResponse.setEmail(account.getCustomer().getEmail());
+        accountSearchResponse.setPhoneNo(account.getCustomer().getPhoneNo());
+        return accountSearchResponse;
+    }
 }

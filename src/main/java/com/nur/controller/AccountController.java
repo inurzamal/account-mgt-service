@@ -2,17 +2,16 @@ package com.nur.controller;
 
 import com.nur.dto.AccountRequest;
 import com.nur.dto.AccountResponse;
-import com.nur.dto.SearchRequest;
+import com.nur.dto.AccountSearchRequest;
+import com.nur.dto.AccountSearchResponse;
 import com.nur.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
-
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 public class AccountController {
@@ -47,15 +46,14 @@ public class AccountController {
         try {
             AccountResponse updatedAccount = accountService.updateAccount(id, accountRequest);
             return new ResponseEntity<>(updatedAccount, HttpStatus.OK);
-        } catch (ResponseStatusException | AccountNotFoundException ex) {
+        } catch (AccountNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/account/search")
-    public ResponseEntity<List<AccountResponse>> searchAccounts(@RequestBody SearchRequest searchRequest){
-        List<AccountResponse> accountResponses = accountService.searchAccounts(searchRequest);
-        return new ResponseEntity<>(accountResponses, HttpStatus.OK);
+    public ResponseEntity<List<AccountSearchResponse>> searchAccounts(@RequestBody AccountSearchRequest searchRequest) {
+        List<AccountSearchResponse> accountSearchResponsList = accountService.searchAccounts(searchRequest);
+        return new ResponseEntity<>(accountSearchResponsList, HttpStatus.OK);
     }
-
 }
