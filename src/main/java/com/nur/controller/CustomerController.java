@@ -2,9 +2,7 @@ package com.nur.controller;
 
 import com.nur.dto.CustomerRequest;
 import com.nur.dto.CustomerResponse;
-import com.nur.exceptions.CustomerNotFoundException;
 import com.nur.service.CustomerService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +14,12 @@ import java.util.List;
 @RestController
 public class CustomerController {
 
+    private final CustomerService customerService;
+
     @Autowired
-    private CustomerService customerService;
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     @PostMapping("customer/create")
     public ResponseEntity<CustomerResponse> createCustomer(@RequestBody CustomerRequest customerRequest) {
@@ -36,8 +38,8 @@ public class CustomerController {
     }
 
     @GetMapping("/customers")
-    public ResponseEntity<List<CustomerResponse>> getAllCustomers() {
-        List<CustomerResponse> allCustomers = customerService.getAllCustomers();
+    public ResponseEntity<List<CustomerResponse>> getAllCustomers(@RequestParam(required = false) String firstName) {
+        List<CustomerResponse> allCustomers = customerService.getAllCustomers(firstName);
         return new ResponseEntity<>(allCustomers, HttpStatus.OK);
     }
 

@@ -1,23 +1,26 @@
 package com.nur.service;
 
-import com.nur.entity.Customer;
 import com.nur.dto.CustomerRequest;
 import com.nur.dto.CustomerResponse;
+import com.nur.entity.Customer;
 import com.nur.exceptions.CustomerNotFoundException;
 import com.nur.repository.CustomerRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomerService {
 
+
+    private final CustomerRepository customerRepository;
+
     @Autowired
-    private CustomerRepository customerRepository;
+    public CustomerService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
     public CustomerResponse createCustomer(CustomerRequest customerRequest) {
         Customer customer = new Customer();
@@ -30,12 +33,14 @@ public class CustomerService {
     }
 
     public CustomerResponse getCustomerById(Long id) {
-        Customer customer = customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException());
+        Customer customer = customerRepository.findById(id).orElseThrow(CustomerNotFoundException::new);
         return mapToResponse(customer);
     }
 
-    public List<CustomerResponse> getAllCustomers() {
-        return customerRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
+    public List<CustomerResponse> getAllCustomers(String firstName) {
+        if (firstName == null)
+            return customerRepository.findAll().stream().map(this::mapToResponse).toList();
+        return customerRepository.findByFirstName(firstName).stream().map(this::mapToResponse).toList();
     }
 
     @Transactional
