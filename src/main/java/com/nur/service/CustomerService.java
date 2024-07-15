@@ -5,7 +5,6 @@ import com.nur.dto.CustomerResponse;
 import com.nur.entity.Customer;
 import com.nur.exceptions.CustomerNotFoundException;
 import com.nur.repository.CustomerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +16,6 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
 
-    @Autowired
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }

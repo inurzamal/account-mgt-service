@@ -19,11 +19,15 @@ import java.util.stream.Collectors;
 @Service
 public class AccountService {
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
+
+    private final CustomerRepository customerRepository;
 
     @Autowired
-    private CustomerRepository customerRepository;
+    public AccountService(AccountRepository accountRepository, CustomerRepository customerRepository) {
+        this.accountRepository = accountRepository;
+        this.customerRepository = customerRepository;
+    }
 
     public AccountResponse createAccount(AccountRequest accountRequest) {
         Customer customer = customerRepository.findById(accountRequest.getCustomerId())
