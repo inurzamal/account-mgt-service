@@ -8,8 +8,17 @@ public class CustomerNotFoundException extends RuntimeException {
     public CustomerNotFoundException(){}
 
     public CustomerNotFoundException(String errorCode, String errorMessage){
+        super(errorMessage);
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
+    }
+
+    public CustomerNotFoundException(Throwable cause) {
+        super(cause);
+    }
+
+    public CustomerNotFoundException(String message) {
+        super(message);
     }
 
     public String getErrorCode() {
